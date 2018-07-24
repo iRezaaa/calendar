@@ -8,7 +8,7 @@ import (
 )
 
 type HttpMethod int
-type RouteHandler func(*App,*model.Session, *Route, http.ResponseWriter, *http.Request, httprouter.Params)
+type RouteHandler func(*App, *model.Session, *Route, http.ResponseWriter, *http.Request, httprouter.Params)
 type AccessType int
 type ResponseStatus string
 
@@ -43,22 +43,22 @@ type Route struct {
 	Access  AccessType
 }
 
-func startRouter(app *App , routes []Route, port int) error {
+func startRouter(app *App, routes []Route, port int) error {
 	router := httprouter.New()
 
 	for _, route := range routes {
 		switch route.Method {
 		case MethodPost:
-			router.POST(route.Path, accessMiddleware(app,route, route.Handler))
+			router.POST(route.Path, accessMiddleware(app, route, route.Handler))
 			break
 		case MethodGet:
-			router.GET(route.Path, accessMiddleware(app,route, route.Handler))
+			router.GET(route.Path, accessMiddleware(app, route, route.Handler))
 			break
 		case MethodPut:
-			router.PUT(route.Path, accessMiddleware(app,route, route.Handler))
+			router.PUT(route.Path, accessMiddleware(app, route, route.Handler))
 			break
 		case MethodDelete:
-			router.DELETE(route.Path, accessMiddleware(app,route, route.Handler))
+			router.DELETE(route.Path, accessMiddleware(app, route, route.Handler))
 			break
 		}
 	}
@@ -66,12 +66,12 @@ func startRouter(app *App , routes []Route, port int) error {
 	return http.ListenAndServe(":"+strconv.Itoa(port), router)
 }
 
-func accessMiddleware(app *App ,route Route, handler RouteHandler) httprouter.Handle {
+func accessMiddleware(app *App, route Route, handler RouteHandler) httprouter.Handle {
 	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
 		switch route.Access {
 		case AccessPublic:
-			handler(app,nil, &route, w, r, ps)
+			handler(app, nil, &route, w, r, ps)
 			break
 		case AccessUser:
 			token := r.Header.Get("Authorization")
@@ -80,7 +80,7 @@ func accessMiddleware(app *App ,route Route, handler RouteHandler) httprouter.Ha
 				session, err := app.SessionRepository.FindByAuthToken(token)
 
 				if session != nil && err == nil && (session.User.Type == model.UserTypeNormal || session.User.Type == model.UserTypeAdmin) {
-					handler(app,session, &route, w, r, ps)
+					handler(app, session, &route, w, r, ps)
 				} else {
 					http.Error(w, "Unauthorized", 401)
 				}
@@ -96,7 +96,7 @@ func accessMiddleware(app *App ,route Route, handler RouteHandler) httprouter.Ha
 				session, err := app.SessionRepository.FindByAuthToken(token)
 
 				if session != nil && err == nil && session.User.Type == model.UserTypeAdmin {
-					handler(app,session, &route, w, r, ps)
+					handler(app, session, &route, w, r, ps)
 				} else {
 					http.Error(w, "Unauthorized", 401)
 				}

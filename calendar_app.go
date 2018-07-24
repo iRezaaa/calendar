@@ -12,6 +12,8 @@ type Config struct {
 type App struct {
 	UserRepository    repository.UserRepository
 	SessionRepository repository.SessionRepository
+	EventRepository   repository.EventRepository
+	NoteRepository    repository.NoteRepository
 }
 
 func (app *App) Init(config Config) {
@@ -26,6 +28,12 @@ func (app *App) Init(config Config) {
 
 	app.UserRepository = repository.UserRepository{}
 	app.UserRepository.DB = db
+
+	app.EventRepository = repository.EventRepository{}
+	app.EventRepository.DB = db
+
+	app.NoteRepository = repository.NoteRepository{}
+	app.NoteRepository.DB = db
 }
 
 func initDatabase(mongoUrl string) (error, *mgo.Database) {

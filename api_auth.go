@@ -107,7 +107,7 @@ func Register(app *App, session *model.Session, route *Route, w http.ResponseWri
 				AuthToken: authToken,
 				FcmToken:  keys["fcm_token"],
 				OpenTime:  time.Now(),
-				User:      *user,
+				User:      user,
 			}
 
 			err := app.SessionRepository.Insert(&session)

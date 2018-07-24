@@ -18,14 +18,19 @@ func (r *SessionRepository) FindAll() ([]model.Session, error) {
 
 func (r *SessionRepository) FindByAuthToken(authToken string) (*model.Session, error) {
 	var session model.Session
-	err := r.DB.C("sessions").Find(bson.M{"_id" : authToken}).One(&session)
+	err := r.DB.C("sessions").Find(bson.M{"_id": authToken}).One(&session)
 	return &session, err
 }
 
 func (r *SessionRepository) FindByUser(userID string) ([]model.Session, error) {
 	var sessions []model.Session
-	err := r.DB.C("sessions").Find(bson.M{"user_id" : userID}).All(&sessions)
+	err := r.DB.C("sessions").Find(bson.M{"user._id": userID}).All(&sessions)
 	return sessions, err
+}
+
+func (r *SessionRepository) RemoveUserSessions(userID string) error {
+	err := r.DB.C("sessions").Remove(bson.M{"user._id": userID})
+	return err
 }
 
 func (r *SessionRepository) Insert(session *model.Session) error {
@@ -34,11 +39,11 @@ func (r *SessionRepository) Insert(session *model.Session) error {
 }
 
 func (r *SessionRepository) Delete(session model.Session) error {
-	err := r.DB.C("sessions").Remove(bson.M{"_id" : session.AuthToken})
+	err := r.DB.C("sessions").Remove(bson.M{"_id": session.AuthToken})
 	return err
 }
 
 func (r *SessionRepository) Update(session model.Session) error {
-	err := r.DB.C("sessions").Update(bson.M{"_id" : session.AuthToken},&session)
+	err := r.DB.C("sessions").Update(bson.M{"_id": session.AuthToken}, &session)
 	return err
 }
