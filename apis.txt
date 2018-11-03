@@ -1,0 +1,203 @@
+Login : {
+  url : 188.40.164.251:8080/login
+  method : post
+  access : public
+  params : {
+    username
+    password
+    fcm_token
+  }
+}
+
+Register : {
+  url : 188.40.164.251:8080/register
+  method : post
+  access : public
+  params : {
+    username
+    password
+    first_name
+    last_name
+    fcm_token
+  }
+}
+
+UserInfo : {
+  url : 188.40.164.251:8080/user_info
+  method : get
+  access : User/Admin
+}
+
+UserNotes : {
+    url : 188.40.164.251:8080/note/all/
+    method : get
+    access : User/Admin
+}
+
+AddNote : {
+    url : 188.40.164.251:8080/note/add
+    method : post
+    access : User/Admin
+    params : {
+        title
+        body
+        show_timestamp
+    }
+}
+
+UpdateNote : {
+    url : 188.40.164.251:8080/note/update
+    method : post
+    access : User/Admin
+    params : {
+        note_id
+        body
+        title
+    }
+}
+
+DeleteNote : {
+    url : 188.40.164.251:8080/note/delete
+    method : post
+    access : User/Admin
+    params : {
+        note_id
+    }
+}
+
+GetEventsByJalaliMonth : {
+    url : 188.40.164.251:8080/events/all
+    method : get
+    access : Public
+    params : {
+        year
+        month
+    }
+}
+
+AddPersonalEvent : {
+    url : 188.40.164.251:8080/events/add
+    method : post
+    access : User/Admin
+    params : {
+        timeStamp
+        event_title
+    }
+}
+
+AddPanelEvent : {
+    url : 188.40.164.251:8080/admin/events/add
+    method : post
+    access : Admin
+    params : {
+        timeStamp
+        event_title
+    }
+}
+
+DeletePersonalEvent : {
+    url : 188.40.164.251:8080/events/delete
+    method : post
+    access : User/Admin
+    params : {
+        event_id
+    }
+}
+
+DeletePanelEvent : {
+    url : 188.40.164.251:8080/admin/events/delete
+    method : post
+    access : Admin
+    params : {
+        event_id
+    }
+}
+
+Today : {
+    url : 188.40.164.251:8080/today
+    method : get
+    access : Public/User
+}
+
+GetDay : {
+    url : 188.40.164.251:8080/day
+    method : get
+    access : Public/User
+    params : {
+        year,
+        month,
+        day
+    }
+}
+
+GrantUser : {
+    url : 188.40.164.251:8080/admin/makeadmin
+    method : post
+    access : Admin
+    params : {
+        username
+    }
+}
+
+Get All Banners : {
+    url : 188.40.164.251:8080/banner/all
+    method : get
+    access : Public
+}
+
+Add Banner : {
+    url : 188.40.164.251:8080/admin/banner/add
+    method : post
+    access : Admin
+    params : {
+        file -> png / jpg (max : 10 MB)
+        title
+        link
+    }
+}
+
+Delete Banner : {
+    url : 188.40.164.251:8080/admin/banner/delete
+    method : post
+    access : Admin
+    params : {
+        banner_id
+    }
+}
+
+Get All Indicators : {
+    url : 188.40.164.251:8080/indicator/all
+    method : get
+    access : Public
+}
+
+Add Indicator : {
+    url : 188.40.164.251:8080/admin/indicator/add
+    method : post
+    access : Admin
+    params : {
+        indicator_id
+        title
+        value
+    }
+}
+
+Update Indicator : {
+    url : 188.40.164.251:8080/admin/indicator/update
+    method : post
+    access : Admin
+    params : {
+        indicator_id
+        title
+        value
+    }
+}
+
+Delete Indicator : {
+    url : 188.40.164.251:8080/admin/indicator/delete
+    method : post
+    access : Admin
+    params : {
+        indicator_id
+    }
+}
