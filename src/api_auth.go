@@ -6,8 +6,7 @@ import (
 	"time"
 	"encoding/json"
 	"gitlab.com/irezaa/calendar/src/model"
-	"fmt"
-	"golang.org/x/crypto/bcrypt"
+		"golang.org/x/crypto/bcrypt"
 )
 
 func Login(app *App, session *model.Session, route *Route, w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
@@ -29,7 +28,7 @@ func Login(app *App, session *model.Session, route *Route, w http.ResponseWriter
 			passwordFromDatabase := []byte(user.Pass)
 			passFromRequest := []byte(keys["password"])
 
-			err = bcrypt.CompareHashAndPassword(passFromRequest, passwordFromDatabase)
+			err = bcrypt.CompareHashAndPassword(passwordFromDatabase, passFromRequest)
 
 			if err == nil {
 				authToken := RandString(15)
@@ -82,6 +81,9 @@ func Login(app *App, session *model.Session, route *Route, w http.ResponseWriter
 }
 
 func Register(app *App, session *model.Session, route *Route, w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	data := make(map[string]interface{})
+	var responseStatus = ResponseStatusOk
+
 	r.ParseMultipartForm(0)
 
 	keys := make(map[string]string)
@@ -94,68 +96,64 @@ func Register(app *App, session *model.Session, route *Route, w http.ResponseWri
 
 	emptyKeys := emptyValidator(keys)
 
-	if len(emptyKeys) == 0 {
-
-		authToken := RandString(15)
-
-		user := new(model.User)
-		user.ID = keys["username"]
-		user.FName = keys["first_name"]
-		user.LName = keys["last_name"]
-		user.Pass = keys["password"]
-		user.Type = model.UserTypeNormal
-
-		err := app.UserRepository.Insert(user)
-
-		if err == nil {
-			session := model.Session{
-				AuthToken: authToken,
-				FcmToken:  keys["fcm_token"],
-				OpenTime:  time.Now(),
-				User:      user,
-			}
-
-			err := app.SessionRepository.Insert(&session)
-
-			if err == nil {
-				data := make(map[string]interface{})
-
-				data["auth_token"] = authToken
-
-				response := HttpJsonResponse{
-					ResponseStatus: ResponseStatusOk,
-					Data:           data,
-				}
-
-				jsonResponse, err := json.Marshal(response)
-
-				if err == nil {
-					w.Header().Set("Content-Type", "application/json")
-					w.Write(jsonResponse)
-				}
-			}else{
-				fmt.Print(err)
-			}
-		}else{
-			fmt.Print(err)
-		}
-	} else {
-		data := make(map[string]interface{})
-
+	if len(emptyKeys) != 0 {
+		responseStatus = ResponseStatusError
 		data["err_code"] = 3
 		data["items"] = emptyKeys
+		data["err_text"] = "missing required keys"
+	}else{
+		authToken := RandString(15)
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(keys["password"]), bcrypt.DefaultCost)
 
-		response := HttpJsonResponse{
-			ResponseStatus: ResponseStatusError,
-			Data:           data,
-		}
+		if err != nil {
+			responseStatus = ResponseStatusError
+			data["err_code"] = 0
+			data["err_text"] = "password cannot be hashed!"
+		}else {
+			user := new(model.User)
+			user.ID = keys["username"]
+			user.FName = keys["first_name"]
+			user.LName = keys["last_name"]
+			user.Pass = string(hashedPassword)
+			user.Type = model.UserTypeNormal
 
-		jsonResponse, err := json.Marshal(response)
+			err := app.UserRepository.Insert(user)
 
-		if err == nil {
-			w.Header().Set("Content-Type", "application/json")
-			w.Write(jsonResponse)
+			if err != nil {
+				responseStatus = ResponseStatusError
+				data["err_code"] = 0
+				data["err_text"] = "cannot insert user object to database!"
+			}else{
+				session := model.Session{
+					AuthToken: authToken,
+					FcmToken:  keys["fcm_token"],
+					OpenTime:  time.Now(),
+					User:      user,
+				}
+
+				err := app.SessionRepository.Insert(&session)
+
+				if err != nil {
+					responseStatus = ResponseStatusError
+					data["err_code"] = 0
+					data["err_text"] = "cannot insert session object to database!"
+				}else{
+					responseStatus = ResponseStatusOk
+					data["auth_token"] = authToken
+				}
+			}
 		}
 	}
 
+	response := HttpJsonResponse{
+		ResponseStatus: responseStatus,
+		Data:           data,
+	}
+
+	jsonResponse, err := json.Marshal(response)
+
+	if err == nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(jsonResponse)
+	}
 }
