@@ -9,7 +9,6 @@ services:
     - mongodb
     depends_on:
     - mongodb
-    command: amd64
     volumes:
     - /hellno/reza/data/uploads:/uploads
     - /mcalendar/src:/src
