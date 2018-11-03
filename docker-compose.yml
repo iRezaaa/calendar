@@ -12,6 +12,8 @@ services:
     volumes:
     - ./data/uploads:/uploads
     - ./src:/src
+    working_dir: /src
+    command: go run calendar.go
     tty: true
   mongodb:
     image: mongo:latest
