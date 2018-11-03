@@ -1,10 +1,10 @@
-package src
+package main
 
 import (
 	"gopkg.in/mgo.v2"
-	"gitlab.com/irezaa/calendar/src/repositorytory"
 	"time"
 	"fmt"
+	"gitlab.com/irezaa/calendar/src/repository"
 )
 
 type Config struct {
