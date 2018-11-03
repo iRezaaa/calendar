@@ -12,6 +12,7 @@ services:
     volumes:
     - ./data/uploads:/uploads
     - ./src:/src
+    tty: true
   mongodb:
     image: mongo:latest
     container_name: "mongodb"
