@@ -11,7 +11,7 @@ services:
     - mongodb
     volumes:
     - ./data/uploads:/uploads
-    - ./src:/src
+    - ./src:/go/src/gitlab.com/irezaa/calendar
     working_dir: /src
     command: go run calendar.go
     tty: true
