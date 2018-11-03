@@ -181,12 +181,7 @@ func main() {
 	user, err := app.UserRepository.FindByID("admin")
 
 	if err != nil {
-		print(err)
-	}
-
-
-	if user == nil {
-		print("admin user is nil")
+		print("admin user is not exist!")
 
 		print("Creating admin user...")
 
@@ -211,7 +206,7 @@ func main() {
 			panic(err)
 		}
 	}else{
-		print("admin user != nil")
+		print("admin is already exist!")
 	}
 
 	go startNotificationHandler(app, true)
