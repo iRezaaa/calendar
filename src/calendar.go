@@ -184,7 +184,10 @@ func main() {
 		print(err)
 	}
 
+
 	if user == nil {
+		print("admin user is nil")
+
 		print("Creating admin user...")
 
 		password := []byte("tfbM2cjRpJx9wjnu")
@@ -207,6 +210,8 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
+	}else{
+		print("admin user != nil")
 	}
 
 	go startNotificationHandler(app, true)
