@@ -173,7 +173,7 @@ func main() {
 			URL:      "mongodb:27017",
 			DBName:   "calendar",
 			UserName: "reza",
-			Password: "RqBdLKaZYcst4b4z",
+			Password: "!4P&4-/]G5YXdgX<",
 			Timeout:  60 * time.Second,
 		},
 	})
