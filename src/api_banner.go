@@ -134,14 +134,14 @@ func GetBannerFile(app *App, session *model.Session, route *Route, w http.Respon
 			}else{
 				databaseImageAddress := banner.ImageURL
 
+				print("/uploads/" + databaseImageAddress)
+
 				if databaseImageAddress == "" {
 					responseStatus = ResponseStatusError
 					data["err_code"] = 0
 					data["err_text"] = "banner address in database is not valid!"
 				}else{
 					responseImage, err = os.Open("/uploads/" + databaseImageAddress)
-
-					print("/uploads/" + databaseImageAddress)
 
 					if err != nil {
 						responseStatus = ResponseStatusError
