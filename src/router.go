@@ -133,7 +133,11 @@ func accessMiddleware(app *App, route Route, handler RouteHandler) httprouter.Ha
 func FileUpload(r *http.Request, requestKey string, pathToSave string, allowedMimeTypes []string) (string, error) {
 
 	requestFile, handler, err := r.FormFile(requestKey)
-	defer requestFile.Close()
+	defer func() {
+		if requestFile != nil {
+			requestFile.Close()
+		}
+	}()
 
 	if err != nil {
 		return "", err
@@ -159,7 +163,11 @@ func FileUpload(r *http.Request, requestKey string, pathToSave string, allowedMi
 	desFilePath := "/uploads/" + pathToSave + "/" + handler.Filename
 
 	desFile, err := os.OpenFile(desFilePath, os.O_WRONLY|os.O_CREATE, 0666)
-	defer desFile.Close()
+	defer func() {
+		if desFile != nil {
+			desFile.Close()
+		}
+	}()
 
 	if err != nil {
 		return "", err
