@@ -70,7 +70,7 @@ func startRouter(app *App, routes []Route, port int) error {
 		}
 	}
 
-	router.ServeFiles("/uploads",http.Dir("/mcalendar/data/uploads"))
+	router.ServeFiles("/uploads",http.Dir("/uploads/"))
 
 	return http.ListenAndServe(":"+strconv.Itoa(port), router)
 }
