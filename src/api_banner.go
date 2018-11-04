@@ -155,12 +155,6 @@ func GetBannerFile(app *App, session *model.Session, route *Route, w http.Respon
 
 	}
 
-	defer func() {
-		if responseImage != nil {
-			responseImage.Close()
-		}
-	}()
-
 	if responseImage != nil {
 		ext := filepath.Ext(responseImage.Name())
 
@@ -179,6 +173,8 @@ func GetBannerFile(app *App, session *model.Session, route *Route, w http.Respon
 				data["err_text"] = "cannot get file type!!"
 			}
 		}
+
+		print("ext := " + ext)
 	}
 
 
@@ -195,10 +191,13 @@ func GetBannerFile(app *App, session *model.Session, route *Route, w http.Respon
 			w.Write(jsonResponse)
 		}
 	}else if responseImage != nil && contentType != "" {
+		defer responseImage.Close()
 		w.Header().Set("Content-Type", contentType) // <-- set the content-type header
 		print("\n banner image writing to response!")
 		io.Copy(w, responseImage)
 	}
+
+	print("\n exit!!!!!!!!!!!!!!kasjdkajdkasjd")
 
 }
 
