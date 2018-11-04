@@ -141,6 +141,8 @@ func GetBannerFile(app *App, session *model.Session, route *Route, w http.Respon
 				}else{
 					responseImage, err = os.Open("/uploads/" + databaseImageAddress)
 
+					print("/uploads/" + databaseImageAddress)
+
 					if err != nil {
 						responseStatus = ResponseStatusError
 						data["err_code"] = 0
