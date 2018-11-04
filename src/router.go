@@ -8,8 +8,7 @@ import (
 	"os"
 	"io"
 	"github.com/pkg/errors"
-	"log"
-)
+	)
 
 type HttpMethod int
 type RouteHandler func(*App, *model.Session, *Route, http.ResponseWriter, *http.Request, httprouter.Params)
@@ -71,8 +70,7 @@ func startRouter(app *App, routes []Route, port int) error {
 		}
 	}
 
-	http.Handle("/", http.FileServer(http.Dir("/mcalendar")))
-	go log.Fatal(http.ListenAndServe(":8081", nil))
+	router.ServeFiles("/uploads",http.Dir("/mcalendar/data/uploads"))
 
 	return http.ListenAndServe(":"+strconv.Itoa(port), router)
 }
