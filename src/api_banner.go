@@ -7,6 +7,9 @@ import (
 	"gitlab.com/irezaa/calendar/src/model"
 	"encoding/hex"
 	"gopkg.in/mgo.v2/bson"
+	"os"
+	"io"
+	"path/filepath"
 )
 
 func GetAllBanners(app *App, session *model.Session, route *Route, w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
@@ -96,6 +99,103 @@ func AddBanner(app *App, session *model.Session, route *Route, w http.ResponseWr
 		w.Header().Set("Content-Type", "application/json")
 		w.Write(jsonResponse)
 	}
+}
+
+func GetBannerFile(app *App, session *model.Session, route *Route, w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	data := make(map[string]interface{})
+	var responseStatus = ResponseStatusOk
+	var responseImage *os.File
+	var contentType = ""
+
+	q := r.URL.Query()
+	keys := make(map[string]string)
+	keys["banner_id"] = q.Get("banner_id")
+	emptyKeys := emptyValidator(keys)
+
+	if len(emptyKeys) != 0 {
+		responseStatus = ResponseStatusError
+		data["err_code"] = 0
+		data["items"] = emptyKeys
+		data["err_text"] = "missing required items!"
+	}else{
+		hexBannerID, err := hex.DecodeString(keys["banner_id"])
+
+		if err != nil || len(hexBannerID) != 12 {
+			responseStatus = ResponseStatusError
+			data["err_code"] = 0
+			data["err_text"] = "banner id format not valid"
+		} else {
+			banner , err := app.BannerRepository.FindByID(bson.ObjectId(hexBannerID))
+
+			if err != nil {
+				responseStatus = ResponseStatusError
+				data["err_code"] = 0
+				data["err_text"] = "banner with given id not found!"
+			}else{
+				databaseImageAddress := banner.ImageURL
+
+				if databaseImageAddress == "" {
+					responseStatus = ResponseStatusError
+					data["err_code"] = 0
+					data["err_text"] = "banner address in database is not valid!"
+				}else{
+					responseImage, err = os.Open("/uploads/" + databaseImageAddress)
+
+					if err != nil {
+						responseStatus = ResponseStatusError
+						data["err_code"] = 0
+						data["err_text"] = "error while open file from db!"
+					}
+				}
+			}
+		}
+
+	}
+
+	defer func() {
+		if responseImage != nil {
+			responseImage.Close()
+		}
+	}()
+
+	if responseImage != nil {
+		ext := filepath.Ext(responseImage.Name())
+
+		if ext == "" {
+			responseStatus = ResponseStatusError
+			data["err_code"] = 0
+			data["err_text"] = "cannot get file type!!"
+		}else {
+			if ext == ".png" {
+				contentType = "image/png"
+			}else if ext == ".jpg" || ext == ".jpeg" {
+				contentType = "image/jpeg"
+			}else {
+				responseStatus = ResponseStatusError
+				data["err_code"] = 0
+				data["err_text"] = "cannot get file type!!"
+			}
+		}
+	}
+
+
+	if responseStatus == ResponseStatusError {
+		response := HttpJsonResponse{
+			ResponseStatus: responseStatus,
+			Data:           data,
+		}
+
+		jsonResponse, err := json.Marshal(response)
+
+		if err == nil {
+			w.Header().Set("Content-Type", "application/json")
+			w.Write(jsonResponse)
+		}
+	}else if responseImage != nil && contentType != "" {
+		w.Header().Set("Content-Type", contentType) // <-- set the content-type header
+		io.Copy(w, responseImage)
+	}
+
 }
 
 func DeleteBanner(app *App, session *model.Session, route *Route, w http.ResponseWriter, r *http.Request, _ httprouter.Params) {

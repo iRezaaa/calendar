@@ -136,6 +136,13 @@ var apiRoutes = []Route{
 		Handler: DeleteBanner,
 	},
 	{
+		Name:    "Get Banner Picture",
+		Method:  MethodGet,
+		Path:    "/banner/picture",
+		Access:  AccessPublic,
+		Handler: GetBannerFile,
+	},
+	{
 		Name:    "Get all indicators",
 		Method:  MethodGet,
 		Path:    "/indicator/all",
