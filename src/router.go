@@ -8,6 +8,7 @@ import (
 	"os"
 	"io"
 	"errors"
+	"path/filepath"
 )
 
 type HttpMethod int
@@ -131,65 +132,6 @@ func accessMiddleware(app *App, route Route, handler RouteHandler) httprouter.Ha
 
 func FileUpload(r *http.Request, requestKey string, pathToSave string, allowedMimeTypes []string) (string, error) {
 
-	//var fileName string
-	//file, handler, err := r.FormFile(requestKey) //retrieve the file from form data
-	//
-	//defer func() {
-	//	if file != nil {
-	//		file.Close()
-	//	}
-	//}()
-	//
-	//if err != nil {
-	//	return "", err
-	//}
-	//
-	//// Create a buffer to store the header of the file in
-	//fileHeader := make([]byte, 512)
-	//
-	//// Copy the headers into the FileHeader buffer
-	//if _, err := file.Read(fileHeader); err != nil {
-	//	return "", err
-	//}
-	//
-	//mimeType := http.DetectContentType(fileHeader)
-	//
-	//if allowedMimeTypes != nil && len(allowedMimeTypes) > 0 {
-	//	isAccepted := false
-	//
-	//	for _, element := range allowedMimeTypes {
-	//		if mimeType == element {
-	//			isAccepted = true
-	//			break
-	//		}
-	//	}
-	//
-	//	if !isAccepted {
-	//		return "", errors.New("mime type not accepted!")
-	//	}
-	//}
-	//
-	//path := "/uploads/" + pathToSave + "/"
-	//
-	//if _, err := os.Stat(path); os.IsNotExist(err) {
-	//	os.Mkdir(path, os.ModePerm)
-	//}
-	//
-	//f, err := os.Create(path+handler.Filename, os.O_WRONLY|os.O_CREATE, 0666)
-	//defer func() {
-	//	if f != nil {
-	//		f.Close()
-	//	}
-	//}()
-	//
-	//if err != nil {
-	//	return "", err
-	//}
-	//
-	//fileName = pathToSave + "/" + handler.Filename
-	//_, err = io.Copy(f, file)
-	//
-
 	requestFile, handler, err := r.FormFile(requestKey)
 	defer requestFile.Close()
 
@@ -197,12 +139,7 @@ func FileUpload(r *http.Request, requestKey string, pathToSave string, allowedMi
 		return "", err
 	}
 
-	fileHeader := make([]byte, 512)
-	if _, err := requestFile.Read(fileHeader); err != nil {
-		return "", err
-	}
-
-	mimeType := http.DetectContentType(fileHeader)
+	mimeType := filepath.Ext(handler.Filename)
 
 	if allowedMimeTypes != nil && len(allowedMimeTypes) > 0 {
 		isAccepted := false

@@ -54,7 +54,7 @@ func AddBanner(app *App, session *model.Session, route *Route, w http.ResponseWr
 		keys["link"] = r.FormValue("link")
 		emptyKeys := emptyValidator(keys)
 
-		filePath, receiveFileErr := FileUpload(r, "file", "banners", []string{"image/png", "image/jpeg"})
+		filePath, receiveFileErr := FileUpload(r, "file", "banners", []string{".png", ".jpeg",".jpg"})
 
 		if receiveFileErr != nil {
 			responseStatus = ResponseStatusError
