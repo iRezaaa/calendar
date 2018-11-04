@@ -7,7 +7,7 @@ import (
 	"gitlab.com/irezaa/calendar/src/model"
 	"os"
 	"io"
-		)
+)
 
 type HttpMethod int
 type RouteHandler func(*App, *model.Session, *Route, http.ResponseWriter, *http.Request, httprouter.Params)
@@ -69,7 +69,7 @@ func startRouter(app *App, routes []Route, port int) error {
 		}
 	}
 
-	router.ServeFiles("/uploads/*filepath",http.Dir("/uploads/"))
+	router.ServeFiles("/uploads/*filepath", http.Dir("/uploads/"))
 
 	return http.ListenAndServe(":"+strconv.Itoa(port), router)
 }
@@ -189,16 +189,23 @@ func FileUpload(r *http.Request, requestKey string, pathToSave string, allowedMi
 	//_, err = io.Copy(f, file)
 	//
 
+	requestFile, handler, err := r.FormFile(requestKey)
+	defer requestFile.Close()
 
+	if err != nil {
+		return "", err
+	}
 
-	file, handler, err := r.FormFile(requestKey)
-	defer file.Close()
+	desFilePath := "/uploads/" + pathToSave + "/" + handler.Filename
 
-	// copy example
-	f, err := os.OpenFile("/uploads/"+pathToSave+"/"+handler.Filename, os.O_WRONLY|os.O_CREATE, 0666)
-	defer f.Close()
-	io.Copy(f, file)
+	desFile, err := os.OpenFile(desFilePath, os.O_WRONLY|os.O_CREATE, 0666)
+	defer desFile.Close()
 
+	if err != nil {
+		return "", err
+	}
 
-	return "/uploads/" + handler.Filename, err
+	io.Copy(desFile, requestFile)
+
+	return desFilePath, err
 }
