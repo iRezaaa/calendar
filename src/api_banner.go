@@ -134,8 +134,6 @@ func GetBannerFile(app *App, session *model.Session, route *Route, w http.Respon
 			}else{
 				databaseImageAddress := banner.ImageURL
 
-				print("/uploads/" + databaseImageAddress)
-
 				if databaseImageAddress == "" {
 					responseStatus = ResponseStatusError
 					data["err_code"] = 0
@@ -198,6 +196,7 @@ func GetBannerFile(app *App, session *model.Session, route *Route, w http.Respon
 		}
 	}else if responseImage != nil && contentType != "" {
 		w.Header().Set("Content-Type", contentType) // <-- set the content-type header
+		print("\n banner image writing to response!")
 		io.Copy(w, responseImage)
 	}
 
