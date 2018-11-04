@@ -7,6 +7,7 @@ import (
 	"gitlab.com/irezaa/calendar/src/model"
 	"os"
 	"io"
+	"errors"
 )
 
 type HttpMethod int
@@ -194,6 +195,28 @@ func FileUpload(r *http.Request, requestKey string, pathToSave string, allowedMi
 
 	if err != nil {
 		return "", err
+	}
+
+	fileHeader := make([]byte, 512)
+	if _, err := requestFile.Read(fileHeader); err != nil {
+		return "", err
+	}
+
+	mimeType := http.DetectContentType(fileHeader)
+
+	if allowedMimeTypes != nil && len(allowedMimeTypes) > 0 {
+		isAccepted := false
+
+		for _, element := range allowedMimeTypes {
+			if mimeType == element {
+				isAccepted = true
+				break
+			}
+		}
+
+		if !isAccepted {
+			return "", errors.New("mime type not accepted")
+		}
 	}
 
 	desFilePath := "/uploads/" + pathToSave + "/" + handler.Filename
