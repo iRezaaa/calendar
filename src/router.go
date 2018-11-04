@@ -8,6 +8,7 @@ import (
 	"os"
 	"io"
 	"github.com/pkg/errors"
+	"log"
 )
 
 type HttpMethod int
@@ -69,6 +70,9 @@ func startRouter(app *App, routes []Route, port int) error {
 			break
 		}
 	}
+
+	http.Handle("/", http.FileServer(http.Dir("/mcalendar")))
+	go log.Fatal(http.ListenAndServe(":8081", nil))
 
 	return http.ListenAndServe(":"+strconv.Itoa(port), router)
 }
@@ -173,7 +177,7 @@ func FileUpload(r *http.Request, requestKey string, pathToSave string, allowedMi
 		os.Mkdir(path, os.ModePerm)
 	}
 
-	f, err := os.OpenFile(path + handler.Filename, os.O_WRONLY|os.O_CREATE, 0666)
+	f, err := os.OpenFile(path+handler.Filename, os.O_WRONLY|os.O_CREATE, 0666)
 	defer func() {
 		if f != nil {
 			f.Close()
