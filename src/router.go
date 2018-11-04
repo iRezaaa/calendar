@@ -7,8 +7,7 @@ import (
 	"gitlab.com/irezaa/calendar/src/model"
 	"os"
 	"io"
-	"github.com/pkg/errors"
-	)
+		)
 
 type HttpMethod int
 type RouteHandler func(*App, *model.Session, *Route, http.ResponseWriter, *http.Request, httprouter.Params)
@@ -131,63 +130,75 @@ func accessMiddleware(app *App, route Route, handler RouteHandler) httprouter.Ha
 
 func FileUpload(r *http.Request, requestKey string, pathToSave string, allowedMimeTypes []string) (string, error) {
 
-	var fileName string
-	file, handler, err := r.FormFile(requestKey) //retrieve the file from form data
+	//var fileName string
+	//file, handler, err := r.FormFile(requestKey) //retrieve the file from form data
+	//
+	//defer func() {
+	//	if file != nil {
+	//		file.Close()
+	//	}
+	//}()
+	//
+	//if err != nil {
+	//	return "", err
+	//}
+	//
+	//// Create a buffer to store the header of the file in
+	//fileHeader := make([]byte, 512)
+	//
+	//// Copy the headers into the FileHeader buffer
+	//if _, err := file.Read(fileHeader); err != nil {
+	//	return "", err
+	//}
+	//
+	//mimeType := http.DetectContentType(fileHeader)
+	//
+	//if allowedMimeTypes != nil && len(allowedMimeTypes) > 0 {
+	//	isAccepted := false
+	//
+	//	for _, element := range allowedMimeTypes {
+	//		if mimeType == element {
+	//			isAccepted = true
+	//			break
+	//		}
+	//	}
+	//
+	//	if !isAccepted {
+	//		return "", errors.New("mime type not accepted!")
+	//	}
+	//}
+	//
+	//path := "/uploads/" + pathToSave + "/"
+	//
+	//if _, err := os.Stat(path); os.IsNotExist(err) {
+	//	os.Mkdir(path, os.ModePerm)
+	//}
+	//
+	//f, err := os.Create(path+handler.Filename, os.O_WRONLY|os.O_CREATE, 0666)
+	//defer func() {
+	//	if f != nil {
+	//		f.Close()
+	//	}
+	//}()
+	//
+	//if err != nil {
+	//	return "", err
+	//}
+	//
+	//fileName = pathToSave + "/" + handler.Filename
+	//_, err = io.Copy(f, file)
+	//
 
-	defer func() {
-		if file != nil {
-			file.Close()
-		}
-	}()
 
-	if err != nil {
-		return "", err
-	}
 
-	// Create a buffer to store the header of the file in
-	fileHeader := make([]byte, 512)
+	file, handler, err := r.FormFile(requestKey)
+	defer file.Close()
 
-	// Copy the headers into the FileHeader buffer
-	if _, err := file.Read(fileHeader); err != nil {
-		return "", err
-	}
+	// copy example
+	f, err := os.OpenFile("/uploads/"+pathToSave+"/"+handler.Filename, os.O_WRONLY|os.O_CREATE, 0666)
+	defer f.Close()
+	io.Copy(f, file)
 
-	mimeType := http.DetectContentType(fileHeader)
 
-	if allowedMimeTypes != nil && len(allowedMimeTypes) > 0 {
-		isAccepted := false
-
-		for _, element := range allowedMimeTypes {
-			if mimeType == element {
-				isAccepted = true
-				break
-			}
-		}
-
-		if !isAccepted {
-			return "", errors.New("mime type not accepted!")
-		}
-	}
-
-	path := "/uploads/" + pathToSave + "/"
-
-	if _, err := os.Stat(path); os.IsNotExist(err) {
-		os.Mkdir(path, os.ModePerm)
-	}
-
-	f, err := os.OpenFile(path+handler.Filename, os.O_WRONLY|os.O_CREATE, 0666)
-	defer func() {
-		if f != nil {
-			f.Close()
-		}
-	}()
-
-	if err != nil {
-		return "", err
-	}
-
-	fileName = pathToSave + "/" + handler.Filename
-	_, err = io.Copy(f, file)
-
-	return fileName, err
+	return "/uploads/" + handler.Filename, err
 }
