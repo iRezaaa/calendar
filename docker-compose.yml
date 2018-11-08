@@ -21,7 +21,7 @@ services:
     ports:
       - "8081:5000"
     links:
-      - calendar
+      - mcalendar
       - mongodb
     volumes:
       - ./admin:/src
