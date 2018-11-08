@@ -21,7 +21,7 @@ services:
     ports:
       - "80:80"
     links:
-      - mcalendar
+      - calendar
       - mongodb
     volumes:
       - ./etc:/requirements
