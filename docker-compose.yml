@@ -15,8 +15,8 @@ services:
     working_dir: /go/src/gitlab.com/irezaa/calendar/src
     command: bash -c "go build -o ./bin/calendar && ./bin/calendar"
     tty: true
-  mcalendar/admin:
-    container_name : "mcalendar/admin"
+  mcalendar-admin:
+    container_name : "mcalendar-admin"
     image: python:latest
     ports:
       - "80:80"
