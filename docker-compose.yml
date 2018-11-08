@@ -17,7 +17,7 @@ services:
     tty: true
   mcalendar-admin:
     container_name : "mcalendar-admin"
-    image: python:latest
+    image: calendar-admin:latest
     ports:
       - "80:80"
     links:
@@ -26,7 +26,7 @@ services:
     volumes:
       - ./admin:/src
     working_dir: /src
-    command: bash -c "pip install -r /requirements/admin_requirements.txt && ls /src && python /src/app.py"
+    command: bash -c "pip install -r /requirements/admin_requirements.txt && python /src/app.py"
     tty: true
   mongodb:
     image: mongo:latest
