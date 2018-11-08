@@ -27,7 +27,7 @@ services:
       - ./etc:/requirements
       - /admin:/src
     working_dir: /src
-    command: bash -c "pip install -r /requirements/admin_requirements.txt && ls /src && python /src/app.py"
+    command: bash -c "pip install -r /requirements/admin_requirements.txt"
   mongodb:
     image: mongo:latest
     container_name: "mongodb"
