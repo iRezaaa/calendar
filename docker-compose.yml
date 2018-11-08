@@ -15,6 +15,18 @@ services:
     working_dir: /go/src/gitlab.com/irezaa/calendar/src
     command: bash -c "go build -o ./bin/calendar && ./bin/calendar"
     tty: true
+  mcalendar/admin:
+    container_name : "mcalendar/admin"
+    image: python:latest
+    ports:
+      - "80:80"
+    links:
+      - mcalendar
+      - mongodb
+    volumes:
+      - ./admin:/src
+    working_dir: /src
+    command: bash -c "pip install -r /src/requirements.txt && python app.py"
   mongodb:
     image: mongo:latest
     container_name: "mongodb"
