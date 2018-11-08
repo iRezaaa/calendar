@@ -1,6 +1,6 @@
 version: '2'
 services:
-  calendar:
+  mcalendar:
     container_name: "mcalendar"
     image: golang:latest
     ports:
@@ -19,14 +19,14 @@ services:
     container_name : "mcalendar-admin"
     image: calendar-admin:latest
     ports:
-      - "80:80"
+      - "8081:5000"
     links:
       - calendar
       - mongodb
     volumes:
       - ./admin:/src
     working_dir: /src
-    command: bash -c "pip install -r /requirements/admin_requirements.txt && python /src/app.py"
+    command: bash -c "python /src/app.py"
     tty: true
   mongodb:
     image: mongo:latest
