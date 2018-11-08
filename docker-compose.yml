@@ -20,7 +20,6 @@ services:
     image: calendar-admin:latest
     ports:
       - "8081:5000"
-      - "8080:8080"
     links:
       - mcalendar
       - mongodb
