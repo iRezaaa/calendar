@@ -24,9 +24,10 @@ services:
       - mcalendar
       - mongodb
     volumes:
-      - ./admin:/src
+      - ./etc:/requirements
+      - /admin:/src
     working_dir: /src
-    command: bash -c "pip install -r /src/requirements.txt && python app.py"
+    command: bash -c "pip install -r /requirements/requirements.txt && python /src/app.py"
   mongodb:
     image: mongo:latest
     container_name: "mongodb"
