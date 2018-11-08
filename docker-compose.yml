@@ -19,12 +19,11 @@ services:
     container_name : "mcalendar-admin"
     image: python:latest
     ports:
-      - "80:5000"
+      - "80:80"
     links:
       - calendar
       - mongodb
     volumes:
-      - ./etc:/requirements
       - ./admin:/src
     working_dir: /src
     command: bash -c "pip install -r /requirements/admin_requirements.txt && ls /src && python /src/app.py"
