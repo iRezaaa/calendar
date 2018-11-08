@@ -28,6 +28,7 @@ services:
       - /admin:/src
     working_dir: /src
     command: bash -c "pip install -r /requirements/admin_requirements.txt"
+    tty: true
   mongodb:
     image: mongo:latest
     container_name: "mongodb"
