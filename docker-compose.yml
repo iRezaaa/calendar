@@ -25,9 +25,9 @@ services:
       - mongodb
     volumes:
       - ./etc:/requirements
-      - /admin:/src
+      - ./admin:/src
     working_dir: /src
-    command: bash -c "pip install -r /requirements/admin_requirements.txt"
+    command: bash -c "pip install -r /requirements/admin_requirements.txt && ls /src && python /src/app.py"
     tty: true
   mongodb:
     image: mongo:latest
