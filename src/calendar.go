@@ -216,15 +216,15 @@ func main() {
 		print("admin is already exist!")
 	}
 
-	//go startNotificationHandler(app, true)
-	//
-	//err = startRouter(app, apiRoutes, 8080)
-	//
-	//if err != nil {
-	//	panic(err)
-	//}
+	go startNotificationHandler(app, true)
 
-	startCrawler(app)
+	err = startRouter(app, apiRoutes, 8080)
+
+	if err != nil {
+		panic(err)
+	}
+
+	//startCrawler(app)
 }
 
 func Index(app *App, session *model.Session, route *Route, w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
