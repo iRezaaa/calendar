@@ -47,6 +47,7 @@ func AddBanner(app *App, session *model.Session, route *Route, w http.ResponseWr
 	if err := r.ParseMultipartForm(10 * MB); err != nil {
 		responseStatus = ResponseStatusError
 		data["err_code"] = 0
+		data["err_server"] = err.Error()
 		data["err_text"] = "file size!"
 	} else {
 		keys := make(map[string]string)
