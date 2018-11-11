@@ -43,11 +43,14 @@ func AddBanner(app *App, session *model.Session, route *Route, w http.ResponseWr
 	data := make(map[string]interface{})
 	var responseStatus = ResponseStatusOk
 
-	r.Body = http.MaxBytesReader(w, r.Body, 10*MB)
-	if err := r.ParseMultipartForm(0); err != nil {
+	//r.Body = http.MaxBytesReader(w, r.Body, 10*MB)
+
+	var a = false
+
+	if !a {
 		responseStatus = ResponseStatusError
 		data["err_code"] = 0
-		data["err_server"] = err.Error()
+		data["err_server"] = ""
 		data["err_text"] = "file size!"
 	} else {
 		keys := make(map[string]string)
