@@ -38,7 +38,6 @@ func (r *NewsRepository) UpdateOrInsert(news model.News) (*mgo.ChangeInfo, error
 		"image_url":    news.ImageURL,
 		"title":        news.Title,
 		"content":      news.Content,
-		"content_type": news.ContentType,
 	}, &news)
 
 	return changeInfo, err

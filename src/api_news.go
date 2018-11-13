@@ -5,8 +5,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 	"encoding/json"
 	"gitlab.com/irezaa/calendar/src/model"
-	"strconv"
-	"time"
+		"time"
 	"encoding/hex"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -55,7 +54,6 @@ func AddNews(app *App, session *model.Session, route *Route, w http.ResponseWrit
 		keys := make(map[string]string)
 		keys["title"] = r.FormValue("title")
 		keys["content"] = r.FormValue("content")
-		keys["contentType"] = r.FormValue("content_type")
 		emptyKeys := emptyValidator(keys)
 
 		filePath, receiveFileErr := FileUpload(r, "file", "news", []string{".png", ".jpeg", ".jpg"})
@@ -71,35 +69,25 @@ func AddNews(app *App, session *model.Session, route *Route, w http.ResponseWrit
 				data["err_code"] = 2
 				data["items"] = emptyKeys
 			} else {
-				contentType, err := strconv.Atoi(keys["content_type"])
+				news := model.News{
+					Title:          keys["title"],
+					Content:        keys["content"],
+					ImageURL:       filePath,
+					CreateTime:     time.Now(),
+					LastUpdateTime: time.Now(),
+				}
+
+				id, err := app.NewsRepository.Insert(&news)
 
 				if err != nil {
 					responseStatus = ResponseStatusError
-					data["err_code"] = 2
-					data["err_text"] = "error while cast content type"
-					data["err_server"] = err
+					data["err_code"] = 0
+					data["err_text"] = "error while add to database"
+					data["err_server"] = err.Error()
 				} else {
-					news := model.News{
-						Title:          keys["title"],
-						Content:        keys["content"],
-						ContentType:    model.NewsContentType(contentType),
-						ImageURL:       filePath,
-						CreateTime:     time.Now(),
-						LastUpdateTime: time.Now(),
-					}
-
-					id, err := app.NewsRepository.Insert(&news)
-
-					if err != nil {
-						responseStatus = ResponseStatusError
-						data["err_code"] = 0
-						data["err_text"] = "error while add to database"
-						data["err_server"] = err.Error()
-					} else {
-						responseStatus = ResponseStatusOk
-						data["news_id"] = id
-						data["news_obj"] = news
-					}
+					responseStatus = ResponseStatusOk
+					data["news_id"] = id
+					data["news_obj"] = news
 				}
 			}
 		}
@@ -128,7 +116,6 @@ func UpdateNews(app *App, session *model.Session, route *Route, w http.ResponseW
 	keys["news_id"] = r.FormValue("news_id")
 	keys["title"] = r.FormValue("title")
 	keys["content"] = r.FormValue("content")
-	keys["content_type"] = r.FormValue("content_type")
 
 	requiredKeys := make(map[string]string)
 	requiredKeys["news_id"] = keys["news_id"]
@@ -163,16 +150,6 @@ func UpdateNews(app *App, session *model.Session, route *Route, w http.ResponseW
 
 				if len(keys["content"]) > 0 && news.Title != keys["content"] {
 					news.Content = keys["content"]
-					updated = true
-				}
-
-				contentType, err := strconv.Atoi(keys["content_type"])
-				if err != nil {
-					contentType = int(model.NewsContentTypeHTML)
-				}
-
-				if len(keys["content_type"]) > 0 && strconv.Itoa(contentType) != keys["content_type"] {
-					news.ContentType = model.NewsContentType(contentType)
 					updated = true
 				}
 
