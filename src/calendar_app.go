@@ -12,11 +12,11 @@ type Config struct {
 }
 
 type DatabaseConfig struct {
-	URL string
-	DBName string
+	URL      string
+	DBName   string
 	UserName string
 	Password string
-	Timeout time.Duration
+	Timeout  time.Duration
 }
 
 type App struct {
@@ -26,6 +26,7 @@ type App struct {
 	NoteRepository      repository.NoteRepository
 	BannerRepository    repository.BannerRepository
 	IndicatorRepository repository.IndicatorRepository
+	NewsRepository      repository.NewsRepository
 }
 
 func (app *App) Init(config Config) {
@@ -53,6 +54,8 @@ func (app *App) Init(config Config) {
 	app.IndicatorRepository = repository.IndicatorRepository{}
 	app.IndicatorRepository.DB = db
 
+	app.NewsRepository = repository.NewsRepository{}
+	app.NewsRepository.DB = db
 }
 
 func initDatabase(dbConfig DatabaseConfig) (error, *mgo.Database) {
@@ -64,7 +67,7 @@ func initDatabase(dbConfig DatabaseConfig) (error, *mgo.Database) {
 		Password: dbConfig.Password,
 	}
 
-	fmt.Printf("Connecting to %s" , info.Addrs[0])
+	fmt.Printf("Connecting to %s", info.Addrs[0])
 
 	session, err := mgo.DialWithInfo(info)
 

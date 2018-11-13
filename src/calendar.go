@@ -170,6 +170,34 @@ var apiRoutes = []Route{
 		Access:  AccessAdmin,
 		Handler: DeleteIndicator,
 	},
+	{
+		Name:    "Get All News",
+		Method:  MethodGet,
+		Path:    "/news/all",
+		Access:  AccessPublic,
+		Handler: GetAllNews,
+	},
+	{
+		Name:    "Add News",
+		Method:  MethodPost,
+		Path:    "/admin/news/add",
+		Access:  AccessAdmin,
+		Handler: AddNews,
+	},
+	{
+		Name:    "Update News",
+		Method:  MethodPost,
+		Path:    "admin/news/update",
+		Access:  AccessAdmin,
+		Handler: UpdateNews,
+	},
+	{
+		Name:    "Delete News",
+		Method:  MethodPost,
+		Path:    "admin/news/delete",
+		Access:  AccessAdmin,
+		Handler: DeleteNews,
+	},
 }
 
 func main() {
@@ -212,7 +240,7 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
-	}else{
+	} else {
 		print("admin is already exist!")
 	}
 
