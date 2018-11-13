@@ -187,14 +187,14 @@ var apiRoutes = []Route{
 	{
 		Name:    "Update News",
 		Method:  MethodPost,
-		Path:    "admin/news/update",
+		Path:    "/admin/news/update",
 		Access:  AccessAdmin,
 		Handler: UpdateNews,
 	},
 	{
 		Name:    "Delete News",
 		Method:  MethodPost,
-		Path:    "admin/news/delete",
+		Path:    "/admin/news/delete",
 		Access:  AccessAdmin,
 		Handler: DeleteNews,
 	},
