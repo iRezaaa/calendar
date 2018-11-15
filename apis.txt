@@ -201,3 +201,65 @@ Delete Indicator : {
         indicator_id
     }
 }
+
+Get All News : {
+    url : 188.40.164.251:8080/news/all
+    method : get
+    access : Public
+}
+
+Add News : {
+    url : 188.40.164.251:8080/admin/news/add
+    method : post
+    access : Admin
+    params : {
+        title
+        content (html)
+        file (image)
+    }
+}
+
+Add News : {
+    url : 188.40.164.251:8080/admin/news/update
+    method : post
+    access : Admin
+    params : {
+        news_id
+        title (optional)
+        content (optional)
+    }
+}
+
+Delete News : {
+    url : 188.40.164.251:8080/admin/news/delete
+    method : post
+    access : Admin
+    params : {
+        news_id (required)
+    }
+}
+
+Get Notification History : {
+    url : 188.40.164.251:8080/admin/notification/all
+    method : get
+    access : Admin
+}
+
+Push Notification : {
+    url : 188.40.164.251:8080/admin/notification/push
+    method : post
+    access : Admin
+    params : {
+        title (req)
+        body (req)
+    }
+}
+
+Delete Notification History {
+    url : 188.40.164.251:8080/admin/notification/delete
+    method : post
+    access : Admin
+    params : {
+        notification_id
+    }
+}

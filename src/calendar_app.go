@@ -5,10 +5,17 @@ import (
 	"time"
 	"fmt"
 	"gitlab.com/irezaa/calendar/src/repository"
+	"github.com/NaySoftware/go-fcm"
 )
 
 type Config struct {
-	DBConfig DatabaseConfig
+	DBConfig  DatabaseConfig
+	FCMConfig FCMConfig
+}
+
+type FCMConfig struct {
+	ServerKey    string
+	DefaultTopic string
 }
 
 type DatabaseConfig struct {
@@ -20,13 +27,15 @@ type DatabaseConfig struct {
 }
 
 type App struct {
-	UserRepository      repository.UserRepository
-	SessionRepository   repository.SessionRepository
-	EventRepository     repository.EventRepository
-	NoteRepository      repository.NoteRepository
-	BannerRepository    repository.BannerRepository
-	IndicatorRepository repository.IndicatorRepository
-	NewsRepository      repository.NewsRepository
+	UserRepository         repository.UserRepository
+	SessionRepository      repository.SessionRepository
+	EventRepository        repository.EventRepository
+	NoteRepository         repository.NoteRepository
+	BannerRepository       repository.BannerRepository
+	IndicatorRepository    repository.IndicatorRepository
+	NewsRepository         repository.NewsRepository
+	NotificationRepository repository.NotificationRepository
+	PushService            PushService
 }
 
 func (app *App) Init(config Config) {
@@ -34,6 +43,13 @@ func (app *App) Init(config Config) {
 
 	if err != nil {
 		panic(err)
+	}
+
+	fcmClient := initFCM(config.FCMConfig)
+
+	if fcmClient != nil {
+		app.PushService = PushService{}
+		app.PushService.FCMClient = fcmClient
 	}
 
 	app.SessionRepository = repository.SessionRepository{}
@@ -56,6 +72,13 @@ func (app *App) Init(config Config) {
 
 	app.NewsRepository = repository.NewsRepository{}
 	app.NewsRepository.DB = db
+
+	app.NotificationRepository = repository.NotificationRepository{}
+	app.NotificationRepository.DB = db
+}
+
+func initFCM(fcmConfig FCMConfig) *fcm.FcmClient {
+	return fcm.NewFcmClient(fcmConfig.ServerKey)
 }
 
 func initDatabase(dbConfig DatabaseConfig) (error, *mgo.Database) {

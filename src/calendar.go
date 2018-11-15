@@ -198,6 +198,27 @@ var apiRoutes = []Route{
 		Access:  AccessAdmin,
 		Handler: DeleteNews,
 	},
+	{
+		Name:    "Get Notifications History",
+		Method:  MethodGet,
+		Path:    "/admin/notification/all",
+		Access:  AccessAdmin,
+		Handler: GetNotificationHistory,
+	},
+	{
+		Name:    "Push Notification to All Devices",
+		Method:  MethodPost,
+		Path:    "/admin/notification/push",
+		Access:  AccessAdmin,
+		Handler: PushNotification,
+	},
+	{
+		Name:    "Delete Notification History",
+		Method:  MethodPost,
+		Path:    "/admin/notification/delete",
+		Access:  AccessAdmin,
+		Handler: DeleteNotificationHistory,
+	},
 }
 
 func main() {
@@ -210,6 +231,10 @@ func main() {
 			UserName: "reza",
 			Password: "!4P&4-/]G5YXdgX<",
 			Timeout:  60 * time.Second,
+		},
+		FCMConfig: FCMConfig{
+			ServerKey:    "AAAAPHnYoWI:APA91bGom3HGXqybz758HA-ewNbjXsHyCjbGTP_ZhC-JQ6pC2iynRunT7kcpswdrlC3EuwGgSUaiFvc-HsrVNQozp3GbHVMNTBnpzMNwZY6yuGkfpDUfh9c9UyBubXGbuoZUSgSW1hGcUHK0JfYRLuKyNF62xP9Zuw",
+			DefaultTopic: "events",
 		},
 	})
 
