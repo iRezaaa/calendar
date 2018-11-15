@@ -3,6 +3,12 @@
 	"ignore": "test",
 	"package": [
 		{
+			"checksumSHA1": "as4Edo+f/S9WLaLwQVfFYe+75wI=",
+			"path": "github.com/NaySoftware/go-fcm",
+			"revision": "28fff9381d17f35619309c7a5ada41d26030d976",
+			"revisionTime": "2018-02-07T12:43:14Z"
+		},
+		{
 			"checksumSHA1": "P1LnkVYDNKSxMKg4qUv+RV1Ec+Q=",
 			"path": "github.com/julienschmidt/httprouter",
 			"revision": "adbc77eec0d91467376ca515bc3a14b8434d0f18",
