@@ -271,13 +271,13 @@ func main() {
 
 	go startNotificationHandler(app, true)
 
-	//err = startRouter(app, apiRoutes, 8080)
-	//
-	//if err != nil {
-	//	panic(err)
-	//}
+	err = startRouter(app, apiRoutes, 8080)
 
-	startCrawler(app)
+	if err != nil {
+		panic(err)
+	}
+
+	//startCrawler(app)
 }
 
 func Index(app *App, session *model.Session, route *Route, w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
