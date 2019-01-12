@@ -1,6 +1,7 @@
 version: '2'
 services:
   mcalendar:
+    restart: always
     container_name: "mcalendar"
     image: golang:latest
     ports:
@@ -16,19 +17,21 @@ services:
     command: bash -c "go build -o ./bin/calendar && ./bin/calendar"
     tty: true
   mcalendar-admin:
-    container_name : "mcalendar-admin"
+    restart: always
+    container_name: "mcalendar-admin"
     image: mcalendar-admin:latest
     ports:
-      - "80:5000"
+    - "80:5000"
     links:
-      - mcalendar
-      - mongodb
+    - mcalendar
+    - mongodb
     volumes:
-      - ./admin:/src
+    - ./admin:/src
     working_dir: /src
     command: bash -c "python /src/app.py"
     tty: true
   mongodb:
+    restart: always
     image: mongo:latest
     container_name: "mongodb"
     environment:
