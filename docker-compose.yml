@@ -34,7 +34,6 @@ services:
     - ./admin:/src
     working_dir: /src
     command: bash -c "python /src/app.py"
-    tty: true
   mongodb:
     restart: always
     image: mongo:latest
