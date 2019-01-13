@@ -20,6 +20,8 @@ services:
     restart: always
     container_name: "mcalendar-admin"
     image: mcalendar-admin:latest
+    expose:
+    - "5000"
     ports:
     - "80:5000"
     links:
